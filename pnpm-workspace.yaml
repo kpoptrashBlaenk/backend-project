@@ -1,3 +1,7 @@
+packages:
+  - nestjs-base
+  - nestjs-mongoose
+
 onlyBuiltDependencies:
   - '@nestjs/core'
   - '@scarf/scarf'
