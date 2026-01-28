@@ -1,5 +1,5 @@
-import z from 'zod'
 import { createZodDto } from 'nestjs-zod'
+import z from 'zod'
 import { userIdSchema } from './common.dto'
 
 const updateUserBodyDtoSchema = z.object({

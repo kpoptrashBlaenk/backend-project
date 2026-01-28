@@ -1,8 +1,9 @@
-import z from 'zod'
 import { createZodDto } from 'nestjs-zod'
+import z from 'zod'
 
 const createUserBodyDtoSchema = z.object({
   name: z.string(),
+  password: z.string().min(8),
   age: z.number().min(1).max(120),
 })
 

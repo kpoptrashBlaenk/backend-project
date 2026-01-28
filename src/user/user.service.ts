@@ -19,6 +19,16 @@ export class UserService {
     return this.userModel.find()
   }
 
+  async findOneByName(name: string): Promise<User> {
+    const foundUser = await this.userModel.findOne({ name })
+
+    if (foundUser === null) {
+      throw new NotFoundException()
+    }
+
+    return foundUser
+  }
+
   async create(createUserBodyDto: CreateUserBodyDto): Promise<User> {
     if (await this.userNameExists(createUserBodyDto.name)) {
       throw new ConflictException()
