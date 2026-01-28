@@ -1,86 +1,62 @@
-# NestJS Boilerplate Monorepo
+# NestJS Mongoose Boilerplate
 
-Monorepo contenant deux boilerplates NestJS prêts à l'emploi :
+Boilerplate NestJS avec intégration Mongoose/MongoDB, prêt à l'emploi.
 
-- **nestjs-base** : Boilerplate NestJS de base sans base de données
-- **nestjs-mongoose** : Boilerplate NestJS avec intégration Mongoose/MongoDB
-
-## Structure
-
-```
-nestjs-boilerplate/
-├── nestjs-base/          # Boilerplate NestJS de base
-├── nestjs-mongoose/      # Boilerplate NestJS avec Mongoose
-├── package.json          # Configuration monorepo
-└── pnpm-workspace.yaml   # Configuration pnpm workspaces
-```
-
-## Installation
-
-### Utilisation dans le monorepo
+## 🚀 Installation rapide
 
 ```bash
-# Installer toutes les dépendances
+# Installer les dépendances
 pnpm install
-```
 
-### Utilisation indépendante
+# Copier le fichier d'environnement
+cp .env.example .env
 
-Chaque package peut être copié et utilisé indépendamment ! 
+# Configurer MongoDB dans le fichier .env
+# MONGODB_URI=mongodb://localhost:27017/nest-js-mongoose
 
-Pour utiliser un package seul (par exemple `nestjs-mongoose`) :
-
-1. Copiez le dossier `nestjs-mongoose` où vous voulez
-2. Allez dans le dossier : `cd nestjs-mongoose`
-3. Installez les dépendances : `pnpm install`
-4. Copiez `.env.example` vers `.env` : `cp .env.example .env`
-5. Configurez vos variables d'environnement dans `.env`
-6. Lancez : `pnpm start:dev`
-
-C'est tout ! Chaque package est complètement autonome avec toutes ses dépendances et configurations.
-
-## Utilisation
-
-### NestJS Base
-
-```bash
 # Démarrer en mode développement
-pnpm start:base:dev
-
-# Build
-pnpm build:base
-
-# Démarrer en production
-pnpm start:base
+pnpm start:dev
 ```
 
-### NestJS Mongoose
+## 📋 Prérequis
 
-```bash
-# Démarrer en mode développement
-pnpm start:mongoose:dev
+- Node.js >= 18.0.0
+- pnpm >= 8.0.0
+- MongoDB (local ou distant)
 
-# Build
-pnpm build:mongoose
+## 🔧 Scripts disponibles
 
-# Démarrer en production
-pnpm start:mongoose
+- `pnpm start:dev` : Démarrer en mode développement avec hot-reload
+- `pnpm start` : Démarrer en mode production
+- `pnpm build` : Compiler le projet
+- `pnpm lint` : Linter le code
+- `pnpm test` : Lancer les tests
+- `pnpm format` : Formater le code avec Prettier
+
+## 📁 Structure
+
+```
+nestjs-mongoose/
+├── src/
+│   ├── config/          # Configuration (variables d'environnement)
+│   ├── filters/         # Filtres d'exception HTTP
+│   ├── user/            # Module utilisateur (exemple avec Mongoose)
+│   ├── app.module.ts    # Module principal
+│   └── main.ts          # Point d'entrée
+├── .env.example         # Exemple de fichier d'environnement
+└── package.json         # Dépendances et scripts
 ```
 
-## Scripts disponibles
+## 🔐 Variables d'environnement
 
-- `pnpm build` : Build tous les packages
-- `pnpm build:base` : Build uniquement nestjs-base
-- `pnpm build:mongoose` : Build uniquement nestjs-mongoose
-- `pnpm start:base:dev` : Démarrer nestjs-base en mode dev
-- `pnpm start:mongoose:dev` : Démarrer nestjs-mongoose en mode dev
-- `pnpm lint` : Linter tous les packages
-- `pnpm test` : Tester tous les packages
-- `pnpm format` : Formater tout le code
+Créez un fichier `.env` à partir de `.env.example` :
 
-## Technologies utilisées
+- `APP_API_PORT` : Port sur lequel l'API écoute (défaut: 3000)
+- `APP_API_KEY` : Clé API pour l'authentification
+- `MONGODB_URI` : URI de connexion MongoDB (ex: `mongodb://localhost:27017/nest-js-mongoose`)
 
-- **NestJS** : Framework Node.js
-- **pnpm** : Gestionnaire de paquets
-- **TypeScript** : Langage de programmation
-- **Mongoose** : ODM pour MongoDB (dans nestjs-mongoose)
+## 📝 Notes
+
+Ce package peut être utilisé indépendamment ou dans le cadre du monorepo parent.
+
+Le module `user` est inclus comme exemple d'utilisation de Mongoose avec NestJS.
