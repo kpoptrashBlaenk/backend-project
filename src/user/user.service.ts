@@ -3,17 +3,21 @@ import {
   Injectable,
   NotFoundException,
 } from '@nestjs/common'
-import { CreateUserBodyDto } from './dtos/request/create-user.dto'
 import { InjectModel } from '@nestjs/mongoose'
-import { User } from './user.schema'
 import { Model, Types } from 'mongoose'
+import { CreateUserBodyDto } from './dtos/request/create-user.dto'
 import { UpdateUserBodyDto } from './dtos/request/update-user.dto'
+import { User } from './user.schema'
 
 @Injectable()
 export class UserService {
   constructor(
     @InjectModel(User.name) private readonly userModel: Model<User>,
   ) {}
+
+  async find(): Promise<User[]> {
+    return this.userModel.find()
+  }
 
   async create(createUserBodyDto: CreateUserBodyDto): Promise<User> {
     if (await this.userNameExists(createUserBodyDto.name)) {
@@ -26,7 +30,7 @@ export class UserService {
     id: Types.ObjectId,
     updateUserDto: UpdateUserBodyDto,
   ): Promise<User> {
-    if (await this.userNameExists(updateUserDto.name)) {
+    if (await this.userNameExists(updateUserDto.name, id)) {
       throw new ConflictException()
     }
 
@@ -55,9 +59,13 @@ export class UserService {
     return deletedUser
   }
 
-  private async userNameExists(name: string): Promise<boolean> {
+  private async userNameExists(
+    name: string,
+    id?: Types.ObjectId,
+  ): Promise<boolean> {
     const found = await this.userModel.findOne({
       name,
+      ...(id && { _id: { $ne: id } }),
     })
 
     return found !== null

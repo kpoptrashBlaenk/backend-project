@@ -4,7 +4,7 @@ const envSchema = z.object({
   APP_API_PORT: z.coerce.number().min(1),
   APP_API_KEY: z.string().min(1),
 
-  MONGODB_URI: z.string().startsWith('mongodb://'),
+  MONGODB_URI: z.string().startsWith('mongodb+srv://'),
 })
 
 export type EnvironmentConfig = z.output<typeof envSchema>

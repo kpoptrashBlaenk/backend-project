@@ -2,26 +2,37 @@ import {
   Body,
   Controller,
   Delete,
+  Get,
   HttpCode,
   HttpStatus,
   Param,
   Post,
   Put,
 } from '@nestjs/common'
-import { UserService } from './user.service'
+import { ApiCreatedResponse } from '@nestjs/swagger'
+import { ZodSerializerDto } from 'nestjs-zod'
 import { CreateUserBodyDto } from './dtos/request/create-user.dto'
+import { DeleteUserParamsDto } from './dtos/request/delete-user.dto'
 import {
   UpdateUserBodyDto,
   UpdateUserParamsDto,
 } from './dtos/request/update-user.dto'
-import { DeleteUserParamsDto } from './dtos/request/delete-user.dto'
-import { ZodSerializerDto } from 'nestjs-zod'
-import { UserResponseDto } from './dtos/response/user.response.dto'
-import { ApiCreatedResponse } from '@nestjs/swagger'
+import {
+  UserResponseDto,
+  UsersResponseDto,
+} from './dtos/response/user.response.dto'
+import { UserService } from './user.service'
 
 @Controller('user') // http://localhost:3000/user/
 export class UserController {
   constructor(private readonly userService: UserService) {}
+  @Get() // GET http://localhost:3000/user/
+  @HttpCode(HttpStatus.OK)
+  @ZodSerializerDto(UsersResponseDto)
+  find() {
+    return this.userService.find()
+  }
+
   @Post() // POST http://localhost:3000/user/
   @HttpCode(HttpStatus.CREATED)
   @ZodSerializerDto(UserResponseDto)
