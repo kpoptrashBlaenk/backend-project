@@ -38,6 +38,12 @@ export class TaskService {
     return updatedTask
   }
 
+  async delete(id: Types.ObjectId, userId: Types.ObjectId) {
+    await this.findByIdAndCheckOwner(id, userId)
+
+    await this.taskModel.findByIdAndDelete(id)
+  }
+
   private async findByIdAndCheckOwner(
     id: Types.ObjectId,
     ownerId: Types.ObjectId,

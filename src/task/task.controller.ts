@@ -1,6 +1,7 @@
 import {
   Body,
   Controller,
+  Delete,
   HttpCode,
   HttpStatus,
   Param,
@@ -12,6 +13,7 @@ import { ApiBearerAuth, ApiCreatedResponse } from '@nestjs/swagger'
 import { ZodSerializerDto } from 'nestjs-zod'
 import { JwtPayload } from '../types'
 import { CreateTaskBodyDto } from './dtos/request/create-task.dto'
+import { DeleteTaskParamsDto } from './dtos/request/delete-task.dto'
 import {
   UpdateTaskBodyDto,
   UpdateTaskParamsDto,
@@ -50,5 +52,15 @@ export class TaskController {
       updateTaskBodyDto,
       req.user.sub,
     )
+  }
+
+  @ApiBearerAuth()
+  @Delete(':id') // DELETE http://localhost:3000/task/:id
+  @HttpCode(HttpStatus.NO_CONTENT)
+  delete(
+    @Param() params: DeleteTaskParamsDto,
+    @Request() req: { user: JwtPayload },
+  ) {
+    return this.taskService.delete(params.id, req.user.sub)
   }
 }
