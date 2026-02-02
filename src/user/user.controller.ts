@@ -6,7 +6,6 @@ import {
   HttpCode,
   HttpStatus,
   Param,
-  Post,
   Put,
   Request,
   UseGuards,
@@ -15,7 +14,6 @@ import { ApiCreatedResponse } from '@nestjs/swagger'
 import { ZodSerializerDto } from 'nestjs-zod'
 import { AuthGuard } from '../auth/auth.guard'
 import { JwtPayload } from '../types'
-import { CreateUserBodyDto } from './dtos/request/create-user.dto'
 import { DeleteUserParamsDto } from './dtos/request/delete-user.dto'
 import {
   UpdateUserBodyDto,
@@ -35,14 +33,6 @@ export class UserController {
   @ZodSerializerDto(UsersResponseDto)
   find() {
     return this.userService.find()
-  }
-
-  @Post() // POST http://localhost:3000/user/
-  @HttpCode(HttpStatus.CREATED)
-  @ZodSerializerDto(UserResponseDto)
-  @ApiCreatedResponse({ type: UserResponseDto })
-  create(@Body() body: CreateUserBodyDto) {
-    return this.userService.create(body)
   }
 
   @Put(':id') // PUT http://localhost:3000/user/:id

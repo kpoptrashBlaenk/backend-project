@@ -5,7 +5,7 @@ import {
 } from '@nestjs/common'
 import { InjectModel } from '@nestjs/mongoose'
 import { Model, Types } from 'mongoose'
-import { CreateUserBodyDto } from './dtos/request/create-user.dto'
+import { RegisterBodyDto } from '../auth/dtos/request/register.dto'
 import { UpdateUserBodyDto } from './dtos/request/update-user.dto'
 import { User } from './user.schema'
 
@@ -19,21 +19,17 @@ export class UserService {
     return this.userModel.find()
   }
 
-  async findOneByName(name: string): Promise<User> {
+  async findOneByName(name: string): Promise<User | null> {
     const foundUser = await this.userModel.findOne({ name })
-
-    if (foundUser === null) {
-      throw new NotFoundException()
-    }
 
     return foundUser
   }
 
-  async create(createUserBodyDto: CreateUserBodyDto): Promise<User> {
-    if (await this.userNameExists(createUserBodyDto.name)) {
+  async create(registerBodyDto: RegisterBodyDto): Promise<User> {
+    if (await this.userNameExists(registerBodyDto.name)) {
       throw new ConflictException()
     }
-    return this.userModel.create(createUserBodyDto)
+    return this.userModel.create(registerBodyDto)
   }
 
   async update(
