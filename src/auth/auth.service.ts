@@ -4,6 +4,7 @@ import {
   UnauthorizedException,
 } from '@nestjs/common'
 import { JwtService } from '@nestjs/jwt'
+import * as bcrypt from 'bcrypt'
 import { Types } from 'mongoose'
 import { ROLES } from '../constants/roles'
 import { AccessToken } from '../types'
@@ -24,7 +25,7 @@ export class AuthService {
       throw new NotFoundException()
     }
 
-    if (foundUser.password !== password) {
+    if (!(await bcrypt.compare(password, foundUser.password))) {
       throw new UnauthorizedException()
     }
 
@@ -36,14 +37,20 @@ export class AuthService {
       _id: new Types.ObjectId(),
       name,
       email,
-      password,
+      password: await this.hashPassword(password),
       role: ROLES.USER,
     })
   }
 
-  async createAccessToken(user: User) {
+  private async createAccessToken(user: User) {
     const payload = { sub: user._id, email: user.email, role: user.role }
 
     return { access_token: await this.jwtService.signAsync(payload) }
+  }
+
+  private async hashPassword(password: string): Promise<string> {
+    const hashedPassword = await bcrypt.hash(password, 10)
+
+    return hashedPassword
   }
 }
