@@ -7,6 +7,7 @@ import {
   Param,
   Request,
 } from '@nestjs/common'
+import { ApiBearerAuth } from '@nestjs/swagger'
 import { ZodSerializerDto } from 'nestjs-zod'
 import { JwtPayload } from '../types'
 import { DeleteUserParamsDto } from './dtos/request/delete-user.dto'
@@ -30,6 +31,7 @@ export class UserController {
     return this.userService.delete(params.id)
   }
 
+  @ApiBearerAuth()
   @Get('me') // POST http://localhost:3000/user/me
   getProfile(@Request() req: { user: JwtPayload }) {
     return req.user
