@@ -10,6 +10,8 @@ import { AuthModule } from './auth/auth.module'
 import { EnvironmentConfig, validate } from './config/env'
 import { HttpExceptionFilter } from './filters/http.exception.filter'
 import { UserModule } from './user/user.module'
+import { TaskController } from './task/task.controller'
+import { TaskModule } from './task/task.module'
 
 @Module({
   imports: [
@@ -24,8 +26,9 @@ import { UserModule } from './user/user.module'
     }),
     UserModule,
     AuthModule,
+    TaskModule,
   ],
-  controllers: [AppController],
+  controllers: [AppController, TaskController],
   providers: [
     AppService,
     {
