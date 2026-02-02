@@ -30,7 +30,7 @@ export class UserController {
     return this.userService.delete(params.id)
   }
 
-  @Get('profile')
+  @Get('me') // POST http://localhost:3000/user/me
   getProfile(@Request() req: { user: JwtPayload }) {
     return req.user
   }
