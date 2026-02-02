@@ -9,9 +9,8 @@ import { AppService } from './app.service'
 import { AuthModule } from './auth/auth.module'
 import { EnvironmentConfig, validate } from './config/env'
 import { HttpExceptionFilter } from './filters/http.exception.filter'
-import { UserModule } from './user/user.module'
-import { TaskController } from './task/task.controller'
 import { TaskModule } from './task/task.module'
+import { UserModule } from './user/user.module'
 
 @Module({
   imports: [
@@ -28,7 +27,7 @@ import { TaskModule } from './task/task.module'
     AuthModule,
     TaskModule,
   ],
-  controllers: [AppController, TaskController],
+  controllers: [AppController],
   providers: [
     AppService,
     {

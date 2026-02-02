@@ -16,7 +16,7 @@ const createUserDtoSchema = z.object({
     .regex(/[0-9]/)
     .regex(/[!@#$%^&*(),.?":{}|<>]/)
     .refine((val) => !/\s/.test(val)),
-  role: z.union([z.literal(ROLES.USER), z.literal(ROLES.ADMIN)]),
+  role: z.enum([ROLES.ADMIN, ROLES.USER]),
 })
 
 export class CreateUserBodyDto extends createZodDto(createUserDtoSchema) {}

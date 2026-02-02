@@ -7,13 +7,10 @@ export type TaskDocument = HydratedDocument<Task>
 @Schema()
 export class Task {
   @Prop()
-  _id: Types.ObjectId
-
-  @Prop()
   title: string
 
   @Prop()
-  description: string
+  description?: string
 
   @Prop()
   status: TaskStatus
