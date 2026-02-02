@@ -15,6 +15,7 @@ async function bootstrap() {
       .setTitle('Example API')
       .setDescription('Example API description')
       .setVersion('1.0')
+      .addBearerAuth() // TODO: remove in prod
       .build(),
   )
 

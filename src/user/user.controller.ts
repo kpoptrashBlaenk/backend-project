@@ -8,9 +8,13 @@ import {
   Param,
   Post,
   Put,
+  Request,
+  UseGuards,
 } from '@nestjs/common'
 import { ApiCreatedResponse } from '@nestjs/swagger'
 import { ZodSerializerDto } from 'nestjs-zod'
+import { AuthGuard } from '../auth/auth.guard'
+import { JwtPayload } from '../types'
 import { CreateUserBodyDto } from './dtos/request/create-user.dto'
 import { DeleteUserParamsDto } from './dtos/request/delete-user.dto'
 import {
@@ -56,5 +60,11 @@ export class UserController {
   @HttpCode(HttpStatus.NO_CONTENT)
   delete(@Param() params: DeleteUserParamsDto) {
     return this.userService.delete(params.id)
+  }
+
+  @UseGuards(AuthGuard)
+  @Get('profile')
+  getProfile(@Request() req: { user: JwtPayload }) {
+    return req.user
   }
 }
