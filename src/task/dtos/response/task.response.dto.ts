@@ -10,3 +10,6 @@ const taskResponseDtoSchema = z.object({
 })
 
 export class TaskResponseDto extends createZodDto(taskResponseDtoSchema) {}
+export class TasksResponseDto extends createZodDto(
+  taskResponseDtoSchema.array(),
+) {}

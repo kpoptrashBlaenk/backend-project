@@ -19,7 +19,10 @@ import {
   UpdateTaskBodyDto,
   UpdateTaskParamsDto,
 } from './dtos/request/update-task.dto'
-import { TaskResponseDto } from './dtos/response/task.response.dto'
+import {
+  TaskResponseDto,
+  TasksResponseDto,
+} from './dtos/response/task.response.dto'
 import { TaskService } from './task.service'
 
 @Controller('task') // http://localhost:3000/task/
@@ -27,7 +30,16 @@ export class TaskController {
   constructor(private readonly taskService: TaskService) {}
 
   @ApiBearerAuth()
-  @Get(':id') // GET http://localhost:3000/task/
+  @Get() // GET http://localhost:3000/task/
+  @HttpCode(HttpStatus.OK)
+  @ZodSerializerDto(TasksResponseDto)
+  @ApiCreatedResponse({ type: TasksResponseDto })
+  getAll(@Request() req: { user: JwtPayload }) {
+    return this.taskService.find(req.user.sub)
+  }
+
+  @ApiBearerAuth()
+  @Get(':id') // GET http://localhost:3000/task/:id
   @HttpCode(HttpStatus.OK)
   @ZodSerializerDto(TaskResponseDto)
   @ApiCreatedResponse({ type: TaskResponseDto })

@@ -11,25 +11,31 @@ export class TaskService {
     @InjectModel(Task.name) private readonly taskModel: Model<Task>,
   ) {}
 
-  async findOne(id: Types.ObjectId, userId: Types.ObjectId): Promise<Task> {
-    const foundTask = await this.findByIdAndCheckOwner(id, userId)
+  async find(ownerId: Types.ObjectId): Promise<Task[]> {
+    const foundTasks = await this.taskModel.find({ owner: ownerId })
+
+    return foundTasks
+  }
+
+  async findOne(id: Types.ObjectId, ownerId: Types.ObjectId): Promise<Task> {
+    const foundTask = await this.findByIdAndCheckOwner(id, ownerId)
 
     return foundTask
   }
 
   async create(
     createTaskBodyDto: CreateTaskBodyDto,
-    userId: Types.ObjectId,
+    ownerId: Types.ObjectId,
   ): Promise<Task> {
-    return this.taskModel.create({ ...createTaskBodyDto, owner: userId })
+    return this.taskModel.create({ ...createTaskBodyDto, owner: ownerId })
   }
 
   async update(
     id: Types.ObjectId,
     updateTaskBodyDto: UpdateTaskBodyDto,
-    userId: Types.ObjectId,
+    ownerId: Types.ObjectId,
   ): Promise<Task> {
-    await this.findByIdAndCheckOwner(id, userId)
+    await this.findByIdAndCheckOwner(id, ownerId)
 
     const updatedTask = await this.taskModel.findByIdAndUpdate(
       id,
@@ -44,8 +50,8 @@ export class TaskService {
     return updatedTask
   }
 
-  async delete(id: Types.ObjectId, userId: Types.ObjectId) {
-    await this.findByIdAndCheckOwner(id, userId)
+  async delete(id: Types.ObjectId, ownerId: Types.ObjectId) {
+    await this.findByIdAndCheckOwner(id, ownerId)
 
     await this.taskModel.findByIdAndDelete(id)
   }
