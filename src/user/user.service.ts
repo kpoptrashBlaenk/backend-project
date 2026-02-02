@@ -1,12 +1,7 @@
-import {
-  ConflictException,
-  Injectable,
-  NotFoundException,
-} from '@nestjs/common'
+import { ConflictException, Injectable } from '@nestjs/common'
 import { InjectModel } from '@nestjs/mongoose'
 import { Model, Types } from 'mongoose'
-import { RegisterBodyDto } from '../auth/dtos/request/register.dto'
-import { UpdateUserBodyDto } from './dtos/request/update-user.dto'
+import { CreateUserBodyDto } from './dtos/request/create-user.dto'
 import { User } from './user.schema'
 
 @Injectable()
@@ -25,52 +20,24 @@ export class UserService {
     return foundUser
   }
 
-  async create(registerBodyDto: RegisterBodyDto): Promise<User> {
-    if (await this.userNameExists(registerBodyDto.name)) {
-      throw new ConflictException()
-    }
-    return this.userModel.create(registerBodyDto)
-  }
-
-  async update(
-    id: Types.ObjectId,
-    updateUserDto: UpdateUserBodyDto,
-  ): Promise<User> {
-    if (await this.userNameExists(updateUserDto.name, id)) {
+  async create(createUserBodyDto: CreateUserBodyDto): Promise<User> {
+    if (await this.emailNameExists(createUserBodyDto.email)) {
       throw new ConflictException()
     }
 
-    const updatedUser = await this.userModel.findByIdAndUpdate(
-      { _id: id },
-      updateUserDto,
-      {
-        new: true,
-      },
-    )
-
-    if (updatedUser === null) {
-      throw new NotFoundException()
-    }
-
-    return updatedUser
+    return this.userModel.create(createUserBodyDto)
   }
 
-  async delete(id: Types.ObjectId): Promise<User> {
-    const deletedUser = await this.userModel.findByIdAndDelete({ _id: id })
-
-    if (deletedUser === null) {
-      throw new NotFoundException()
-    }
-
-    return deletedUser
+  async delete(id: Types.ObjectId) {
+    await this.userModel.findByIdAndDelete(id)
   }
 
-  private async userNameExists(
-    name: string,
+  private async emailNameExists(
+    email: string,
     id?: Types.ObjectId,
   ): Promise<boolean> {
     const found = await this.userModel.findOne({
-      name,
+      email,
       ...(id && { _id: { $ne: id } }),
     })
 

@@ -4,6 +4,8 @@ import {
   UnauthorizedException,
 } from '@nestjs/common'
 import { JwtService } from '@nestjs/jwt'
+import { Types } from 'mongoose'
+import { ROLES } from '../constants/roles'
 import { AccessToken } from '../types'
 import { User } from '../user/user.schema'
 import { UserService } from '../user/user.service'
@@ -29,14 +31,14 @@ export class AuthService {
     return await this.createAccessToken(foundUser)
   }
 
-  async register(
-    name: string,
-    password: string,
-    age: number,
-  ): Promise<AccessToken> {
-    const newUser = await this.userService.create({ name, password, age })
-
-    return this.createAccessToken(newUser)
+  async register(name: string, email: string, password: string): Promise<User> {
+    return await this.userService.create({
+      _id: new Types.ObjectId(),
+      name,
+      email,
+      password,
+      role: ROLES.USER,
+    })
   }
 
   async createAccessToken(user: User) {

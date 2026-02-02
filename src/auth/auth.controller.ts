@@ -2,6 +2,7 @@ import { Body, Controller, HttpCode, HttpStatus, Post } from '@nestjs/common'
 import { ApiCreatedResponse } from '@nestjs/swagger'
 import { ZodSerializerDto } from 'nestjs-zod'
 import { Public } from '../decorators/public.decorator'
+import { UserResponseDto } from '../user/dtos/response/user.response.dto'
 import { AuthService } from './auth.service'
 import { RegisterBodyDto } from './dtos/request/register.dto'
 import { SignInBodyDto } from './dtos/request/sign-in.dto'
@@ -23,9 +24,9 @@ export class AuthController {
   @Public()
   @Post('register') // POST http://localhost:3000/auth/register
   @HttpCode(HttpStatus.CREATED)
-  @ZodSerializerDto(AccessTokenResponseDto)
-  @ApiCreatedResponse({ type: AccessTokenResponseDto })
+  @ZodSerializerDto(UserResponseDto)
+  @ApiCreatedResponse({ type: UserResponseDto })
   create(@Body() body: RegisterBodyDto) {
-    return this.authService.register(body.name, body.password, body.age)
+    return this.authService.register(body.name, body.email, body.password)
   }
 }
