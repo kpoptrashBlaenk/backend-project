@@ -11,6 +11,12 @@ export class TaskService {
     @InjectModel(Task.name) private readonly taskModel: Model<Task>,
   ) {}
 
+  async findOne(id: Types.ObjectId, userId: Types.ObjectId): Promise<Task> {
+    const foundTask = await this.findByIdAndCheckOwner(id, userId)
+
+    return foundTask
+  }
+
   async create(
     createTaskBodyDto: CreateTaskBodyDto,
     userId: Types.ObjectId,
@@ -53,6 +59,7 @@ export class TaskService {
     if (!task || task.owner !== ownerId) {
       throw new NotFoundException()
     }
+
     return task
   }
 }

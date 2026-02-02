@@ -2,6 +2,7 @@ import {
   Body,
   Controller,
   Delete,
+  Get,
   HttpCode,
   HttpStatus,
   Param,
@@ -24,6 +25,18 @@ import { TaskService } from './task.service'
 @Controller('task') // http://localhost:3000/task/
 export class TaskController {
   constructor(private readonly taskService: TaskService) {}
+
+  @ApiBearerAuth()
+  @Get(':id') // GET http://localhost:3000/task/
+  @HttpCode(HttpStatus.OK)
+  @ZodSerializerDto(TaskResponseDto)
+  @ApiCreatedResponse({ type: TaskResponseDto })
+  get(
+    @Param() updateTaskParamsDto: UpdateTaskParamsDto,
+    @Request() req: { user: JwtPayload },
+  ) {
+    return this.taskService.findOne(updateTaskParamsDto.id, req.user.sub)
+  }
 
   @ApiBearerAuth()
   @Post() // POST http://localhost:3000/task/
