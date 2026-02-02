@@ -14,8 +14,8 @@ export class UserService {
     return this.userModel.find()
   }
 
-  async findOneByName(name: string): Promise<User | null> {
-    const foundUser = await this.userModel.findOne({ name })
+  async findOneByEmail(email: string): Promise<User | null> {
+    const foundUser = await this.userModel.findOne({ email })
 
     return foundUser
   }

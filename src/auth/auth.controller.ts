@@ -18,7 +18,7 @@ export class AuthController {
   @ZodSerializerDto(AccessTokenResponseDto)
   @ApiCreatedResponse({ type: AccessTokenResponseDto })
   signIn(@Body() signInBodyDto: SignInBodyDto) {
-    return this.authService.signIn(signInBodyDto.name, signInBodyDto.password)
+    return this.authService.signIn(signInBodyDto.email, signInBodyDto.password)
   }
 
   @Public()

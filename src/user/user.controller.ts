@@ -6,10 +6,8 @@ import {
   HttpStatus,
   Param,
   Request,
-  UseGuards,
 } from '@nestjs/common'
 import { ZodSerializerDto } from 'nestjs-zod'
-import { AuthGuard } from '../auth/auth.guard'
 import { JwtPayload } from '../types'
 import { DeleteUserParamsDto } from './dtos/request/delete-user.dto'
 import { UsersResponseDto } from './dtos/response/user.response.dto'
@@ -32,7 +30,6 @@ export class UserController {
     return this.userService.delete(params.id)
   }
 
-  @UseGuards(AuthGuard)
   @Get('profile')
   getProfile(@Request() req: { user: JwtPayload }) {
     return req.user

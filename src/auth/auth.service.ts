@@ -17,8 +17,8 @@ export class AuthService {
     private jwtService: JwtService,
   ) {}
 
-  async signIn(name: string, password: string): Promise<AccessToken> {
-    const foundUser = await this.userService.findOneByName(name)
+  async signIn(email: string, password: string): Promise<AccessToken> {
+    const foundUser = await this.userService.findOneByEmail(email)
 
     if (foundUser === null) {
       throw new NotFoundException()
