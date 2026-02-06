@@ -1,83 +1,59 @@
-import {
-  ConflictException,
-  Injectable,
-  NotFoundException,
-} from '@nestjs/common'
+import { ConflictException, Injectable } from '@nestjs/common'
 import { InjectModel } from '@nestjs/mongoose'
 import { Model, Types } from 'mongoose'
 import { CreateUserBodyDto } from './dtos/request/create-user.dto'
-import { UpdateUserBodyDto } from './dtos/request/update-user.dto'
 import { User } from './user.schema'
 
+// all user related route treatment
 @Injectable()
 export class UserService {
   constructor(
     @InjectModel(User.name) private readonly userModel: Model<User>,
   ) {}
 
+  // get all users
   async find(): Promise<User[]> {
     return this.userModel.find()
   }
 
-  async findOneByName(name: string): Promise<User> {
-    const foundUser = await this.userModel.findOne({ name })
-
-    if (foundUser === null) {
-      throw new NotFoundException()
-    }
+  // get one user with this email
+  async findOneByEmail(email: string): Promise<User | null> {
+    // find user by email
+    const foundUser = await this.userModel.findOne({ email })
 
     return foundUser
   }
 
+  // create user
   async create(createUserBodyDto: CreateUserBodyDto): Promise<User> {
-    if (await this.userNameExists(createUserBodyDto.name)) {
-      throw new ConflictException()
-    }
+    // check if email already exists
+    await this.emailNameExists(createUserBodyDto.email)
+
+    // create new user
     return this.userModel.create(createUserBodyDto)
   }
 
-  async update(
-    id: Types.ObjectId,
-    updateUserDto: UpdateUserBodyDto,
-  ): Promise<User> {
-    if (await this.userNameExists(updateUserDto.name, id)) {
-      throw new ConflictException()
-    }
-
-    const updatedUser = await this.userModel.findByIdAndUpdate(
-      { _id: id },
-      updateUserDto,
-      {
-        new: true,
-      },
-    )
-
-    if (updatedUser === null) {
-      throw new NotFoundException()
-    }
-
-    return updatedUser
+  // delete user
+  async delete(id: Types.ObjectId) {
+    await this.userModel.findByIdAndDelete(id)
   }
 
-  async delete(id: Types.ObjectId): Promise<User> {
-    const deletedUser = await this.userModel.findByIdAndDelete({ _id: id })
-
-    if (deletedUser === null) {
-      throw new NotFoundException()
-    }
-
-    return deletedUser
-  }
-
-  private async userNameExists(
-    name: string,
+  // check if email already exists
+  private async emailNameExists(
+    email: string,
     id?: Types.ObjectId,
-  ): Promise<boolean> {
-    const found = await this.userModel.findOne({
-      name,
+  ): Promise<void> {
+    // find user by email
+    const exist = await this.userModel.findOne({
+      email,
+      // avoid id equal to current users id in case of updates that doesn't change the email
+      // i just realized this is not polished because imagien he DOES changes his email but another user has this... huh...
       ...(id && { _id: { $ne: id } }),
     })
 
-    return found !== null
+    // if exist then 409
+    if (exist) {
+      throw new ConflictException()
+    }
   }
 }

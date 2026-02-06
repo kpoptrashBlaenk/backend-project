@@ -1,9 +1,10 @@
 import { createZodDto } from 'nestjs-zod'
 import z from 'zod'
 
+// schema to respect when logging in a user
 const signInDtoSchema = z.object({
-  name: z.string(),
-  password: z.string().min(8),
+  email: z.email(),
+  password: z.string(),
 })
 
 export class SignInBodyDto extends createZodDto(signInDtoSchema) {}

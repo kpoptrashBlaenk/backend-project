@@ -1,11 +1,8 @@
 import { createZodDto } from 'nestjs-zod'
 import z from 'zod'
-import { ROLES } from '../../../constants/roles.constants'
-import { userIdSchema } from './common.dto'
 
-// schema to respect when creating a user
-const createUserDtoSchema = z.object({
-  _id: userIdSchema,
+// schema to respect when registering
+const registerDtoSchema = z.object({
   name: z.string(),
   email: z.email(),
   /**
@@ -26,8 +23,6 @@ const createUserDtoSchema = z.object({
     .regex(/[0-9]/)
     .regex(/[!@#$%^&*(),.?":{}|<>]/)
     .refine((val) => !/\s/.test(val)),
-  // hardcoded roles (not present in register as this is not chosen by the user himself)
-  role: z.enum([ROLES.ADMIN, ROLES.USER]),
 })
 
-export class CreateUserBodyDto extends createZodDto(createUserDtoSchema) {}
+export class RegisterBodyDto extends createZodDto(registerDtoSchema) {}

@@ -1,70 +1,54 @@
 import {
-  Body,
   Controller,
   Delete,
   Get,
   HttpCode,
   HttpStatus,
   Param,
-  Post,
-  Put,
   Request,
-  UseGuards,
 } from '@nestjs/common'
-import { ApiCreatedResponse } from '@nestjs/swagger'
+import { ApiBearerAuth, ApiCreatedResponse } from '@nestjs/swagger'
 import { ZodSerializerDto } from 'nestjs-zod'
-import { AuthGuard } from '../auth/auth.guard'
+import { ROLES } from '../constants/roles.constants'
+import { Roles } from '../decorators/roles.decorator'
+import { TasksResponseDto } from '../task/dtos/response/task.response.dto'
 import { JwtPayload } from '../types'
-import { CreateUserBodyDto } from './dtos/request/create-user.dto'
 import { DeleteUserParamsDto } from './dtos/request/delete-user.dto'
-import {
-  UpdateUserBodyDto,
-  UpdateUserParamsDto,
-} from './dtos/request/update-user.dto'
-import {
-  UserResponseDto,
-  UsersResponseDto,
-} from './dtos/response/user.response.dto'
+import { UsersResponseDto } from './dtos/response/user.response.dto'
 import { UserService } from './user.service'
 
+// holds all user related routes
 @Controller('user') // http://localhost:3000/user/
 export class UserController {
   constructor(private readonly userService: UserService) {}
+
+  @ApiBearerAuth() // ask access token (swagger)
+  @Roles(ROLES.ADMIN) // user needs to be admin
   @Get() // GET http://localhost:3000/user/
-  @HttpCode(HttpStatus.OK)
-  @ZodSerializerDto(UsersResponseDto)
+  @HttpCode(HttpStatus.OK) // 200
+  @ZodSerializerDto(UsersResponseDto) // return schema
+  @ApiCreatedResponse({ type: TasksResponseDto }) // return schema (swagger)
+  // get all users
   find() {
     return this.userService.find()
   }
 
-  @Post() // POST http://localhost:3000/user/
-  @HttpCode(HttpStatus.CREATED)
-  @ZodSerializerDto(UserResponseDto)
-  @ApiCreatedResponse({ type: UserResponseDto })
-  create(@Body() body: CreateUserBodyDto) {
-    return this.userService.create(body)
-  }
-
-  @Put(':id') // PUT http://localhost:3000/user/:id
-  @HttpCode(HttpStatus.OK)
-  @ZodSerializerDto(UserResponseDto)
-  @ApiCreatedResponse({ type: UserResponseDto })
-  update(
-    @Body() updateUserBodyDto: UpdateUserBodyDto,
-    @Param() updateUserParamsDto: UpdateUserParamsDto,
-  ) {
-    return this.userService.update(updateUserParamsDto.id, updateUserBodyDto)
-  }
-
-  @Delete(':id') // DELETE http://localhost:3000/user/:id
-  @HttpCode(HttpStatus.NO_CONTENT)
-  delete(@Param() params: DeleteUserParamsDto) {
-    return this.userService.delete(params.id)
-  }
-
-  @UseGuards(AuthGuard)
-  @Get('profile')
+  @ApiBearerAuth() // ask access token (swagger)
+  @Get('me') // POST http://localhost:3000/user/me
+  @HttpCode(HttpStatus.OK) // 200
+  @ZodSerializerDto(UsersResponseDto) // return schema
+  @ApiCreatedResponse({ type: TasksResponseDto }) // return schema (swagger)
+  // get current user
   getProfile(@Request() req: { user: JwtPayload }) {
     return req.user
+  }
+
+  @ApiBearerAuth() // ask access token (swagger)
+  @Roles(ROLES.ADMIN) // user needs to be admin
+  @Delete(':id') // DELETE http://localhost:3000/user/:id
+  @HttpCode(HttpStatus.NO_CONTENT) // 204
+  // delete user
+  delete(@Param() params: DeleteUserParamsDto) {
+    return this.userService.delete(params.id)
   }
 }
