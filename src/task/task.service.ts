@@ -1,6 +1,7 @@
 import { Injectable, NotFoundException } from '@nestjs/common'
 import { InjectModel } from '@nestjs/mongoose'
 import { Model, Types } from 'mongoose'
+import { TaskStatus } from '../types'
 import { CreateTaskBodyDto } from './dtos/request/create-task.dto'
 import { UpdateTaskBodyDto } from './dtos/request/update-task.dto'
 import { Task } from './task.schema'
@@ -27,7 +28,14 @@ export class TaskService {
     createTaskBodyDto: CreateTaskBodyDto,
     ownerId: Types.ObjectId,
   ): Promise<Task> {
-    return this.taskModel.create({ ...createTaskBodyDto, owner: ownerId })
+    const createdTask = await this.taskModel.create({
+      ...createTaskBodyDto,
+      owner: ownerId,
+    })
+
+    this.logTask(createdTask.title, createdTask.status)
+
+    return createdTask
   }
 
   async update(
@@ -46,6 +54,8 @@ export class TaskService {
     if (!updatedTask) {
       throw new NotFoundException()
     }
+
+    this.logTask(updatedTask.title, updatedTask.status)
 
     return updatedTask
   }
@@ -67,5 +77,18 @@ export class TaskService {
     }
 
     return task
+  }
+
+  private logTask(name: string, status: TaskStatus) {
+    if (status === 'done') {
+      const message = `TASK ${name} IS NOW DONE`
+      const divider = '#'.repeat(message.length)
+
+      console.log(`
+${divider}
+${message}
+${divider}
+        `)
+    }
   }
 }

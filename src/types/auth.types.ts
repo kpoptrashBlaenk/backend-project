@@ -6,7 +6,7 @@ export type AccessToken = { access_token: string }
 export type JwtPayload = {
   sub: Types.ObjectId
   email: string
-  role: string
+  role: Role
 }
 
 export type Role = (typeof ROLES)[keyof typeof ROLES]
