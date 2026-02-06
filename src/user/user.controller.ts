@@ -25,15 +25,15 @@ export class UserController {
     return this.userService.find()
   }
 
-  @Delete(':id') // DELETE http://localhost:3000/user/:id
-  @HttpCode(HttpStatus.NO_CONTENT)
-  delete(@Param() params: DeleteUserParamsDto) {
-    return this.userService.delete(params.id)
-  }
-
   @ApiBearerAuth()
   @Get('me') // POST http://localhost:3000/user/me
   getProfile(@Request() req: { user: JwtPayload }) {
     return req.user
+  }
+
+  @Delete(':id') // DELETE http://localhost:3000/user/:id
+  @HttpCode(HttpStatus.NO_CONTENT)
+  delete(@Param() params: DeleteUserParamsDto) {
+    return this.userService.delete(params.id)
   }
 }
