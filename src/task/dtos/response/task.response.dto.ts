@@ -2,6 +2,7 @@ import { createZodDto } from 'nestjs-zod'
 import z from 'zod'
 import { TASK_STATUS } from '../../../constants/task.constants'
 
+// task returned
 const taskResponseDtoSchema = z.object({
   title: z.string().min(1),
   description: z.string().optional(),
@@ -10,6 +11,7 @@ const taskResponseDtoSchema = z.object({
 })
 
 export class TaskResponseDto extends createZodDto(taskResponseDtoSchema) {}
+// tasks as an array
 export class TasksResponseDto extends createZodDto(
   taskResponseDtoSchema.array(),
 ) {}

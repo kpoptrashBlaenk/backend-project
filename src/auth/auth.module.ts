@@ -11,7 +11,9 @@ import { RolesGuard } from './guards/roles.guard'
 
 @Module({
   imports: [
+    // include user module as user is used in auth service
     UserModule,
+    // add jwt with configs for auth tokens
     JwtModule.registerAsync({
       global: true,
       imports: [ConfigModule],
@@ -22,7 +24,9 @@ import { RolesGuard } from './guards/roles.guard'
       inject: [ConfigService],
     }),
   ],
+  // add auth controller
   controllers: [AuthController],
+  // add auth service and all guards
   providers: [
     AuthService,
     { provide: APP_GUARD, useClass: AuthGuard },

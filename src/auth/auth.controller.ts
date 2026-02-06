@@ -8,24 +8,27 @@ import { RegisterBodyDto } from './dtos/request/register.dto'
 import { SignInBodyDto } from './dtos/request/sign-in.dto'
 import { AccessTokenResponseDto } from './dtos/response/access_token.dto'
 
+// holds all auth related routes
 @Controller('auth')
 export class AuthController {
   constructor(private authService: AuthService) {}
 
-  @Public()
+  @Public() // accessible by all
   @Post('login') // POST http://localhost:3000/auth/login
-  @HttpCode(HttpStatus.OK)
-  @ZodSerializerDto(AccessTokenResponseDto)
-  @ApiCreatedResponse({ type: AccessTokenResponseDto })
+  @HttpCode(HttpStatus.OK) // 200
+  @ZodSerializerDto(AccessTokenResponseDto) // return schema
+  @ApiCreatedResponse({ type: AccessTokenResponseDto }) // return schema (swagger)
+  // use sign in of auth service
   signIn(@Body() signInBodyDto: SignInBodyDto) {
     return this.authService.signIn(signInBodyDto.email, signInBodyDto.password)
   }
 
-  @Public()
+  @Public() // accessible by all
   @Post('register') // POST http://localhost:3000/auth/register
-  @HttpCode(HttpStatus.CREATED)
-  @ZodSerializerDto(UserResponseDto)
-  @ApiCreatedResponse({ type: UserResponseDto })
+  @HttpCode(HttpStatus.CREATED) // 201
+  @ZodSerializerDto(UserResponseDto) // return schema
+  @ApiCreatedResponse({ type: UserResponseDto }) // return schema (swagger)
+  // use register of auth service
   create(@Body() body: RegisterBodyDto) {
     return this.authService.register(body.name, body.email, body.password)
   }

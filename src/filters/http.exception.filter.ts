@@ -3,6 +3,7 @@ import { BaseExceptionFilter } from '@nestjs/core'
 import { ZodSerializationException } from 'nestjs-zod'
 import { ZodError } from 'zod'
 
+// catcher to handle and log zod errors i think
 @Catch(HttpException)
 export class HttpExceptionFilter extends BaseExceptionFilter {
   private logger = new Logger()

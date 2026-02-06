@@ -2,6 +2,7 @@ import { createZodDto } from 'nestjs-zod'
 import z from 'zod'
 import { ROLES } from '../../../constants/roles.constants'
 
+// user returned
 export const userResponseSchema = z.object({
   name: z.string(),
   email: z.email(),
@@ -9,6 +10,7 @@ export const userResponseSchema = z.object({
 })
 
 export class UserResponseDto extends createZodDto(userResponseSchema) {}
+// user as an array
 export class UsersResponseDto extends createZodDto(
   userResponseSchema.array(),
 ) {}
