@@ -1,5 +1,5 @@
 import { Types } from 'mongoose'
-import { ROLES } from '../constants/roles'
+import { ROLES } from '../constants/roles.constants'
 
 export type AccessToken = { access_token: string }
 

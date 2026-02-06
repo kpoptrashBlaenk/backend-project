@@ -1,6 +1,6 @@
 import { createZodDto } from 'nestjs-zod'
 import z from 'zod'
-import { TASK_STATUS } from '../../../constants/taskStatus'
+import { TASK_STATUS } from '../../../constants/task.constants'
 import { taskIdSchema } from './common.dto'
 
 const updateTaskBodyDtoSchema = z.object({

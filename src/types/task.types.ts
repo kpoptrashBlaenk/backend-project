@@ -1,3 +1,3 @@
-import { TASK_STATUS } from '../constants/taskStatus'
+import { TASK_STATUS } from '../constants/task.constants'
 
 export type TaskStatus = (typeof TASK_STATUS)[keyof typeof TASK_STATUS]

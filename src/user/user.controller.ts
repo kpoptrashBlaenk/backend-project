@@ -9,7 +9,7 @@ import {
 } from '@nestjs/common'
 import { ApiBearerAuth } from '@nestjs/swagger'
 import { ZodSerializerDto } from 'nestjs-zod'
-import { ROLES } from '../constants/roles'
+import { ROLES } from '../constants/roles.constants'
 import { Roles } from '../decorators/roles.decorator'
 import { JwtPayload } from '../types'
 import { DeleteUserParamsDto } from './dtos/request/delete-user.dto'

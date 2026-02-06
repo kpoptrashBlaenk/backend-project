@@ -1,6 +1,6 @@
 import { createZodDto } from 'nestjs-zod'
 import z from 'zod'
-import { ROLES } from '../../../constants/roles'
+import { ROLES } from '../../../constants/roles.constants'
 import { userIdSchema } from './common.dto'
 
 const createUserDtoSchema = z.object({
