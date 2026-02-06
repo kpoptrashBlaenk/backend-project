@@ -5,8 +5,9 @@ import { JwtModule } from '@nestjs/jwt'
 import { EnvironmentConfig } from '../config/env'
 import { UserModule } from '../user/user.module'
 import { AuthController } from './auth.controller'
-import { AuthGuard } from './auth.guard'
 import { AuthService } from './auth.service'
+import { AuthGuard } from './guards/auth.guard'
+import { RolesGuard } from './guards/roles.guard'
 
 @Module({
   imports: [
@@ -16,12 +17,16 @@ import { AuthService } from './auth.service'
       imports: [ConfigModule],
       useFactory: (configService: ConfigService<EnvironmentConfig, true>) => ({
         secret: configService.get('JWT_SECRET'),
-        signOptions: { expiresIn: '60m' }, // TODO: set to 60m in prod
+        signOptions: { expiresIn: '60m' },
       }),
       inject: [ConfigService],
     }),
   ],
   controllers: [AuthController],
-  providers: [AuthService, { provide: APP_GUARD, useClass: AuthGuard }],
+  providers: [
+    AuthService,
+    { provide: APP_GUARD, useClass: AuthGuard },
+    { provide: APP_GUARD, useClass: RolesGuard },
+  ],
 })
 export class AuthModule {}
