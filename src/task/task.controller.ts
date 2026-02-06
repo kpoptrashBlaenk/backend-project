@@ -8,13 +8,15 @@ import {
   Param,
   Post,
   Put,
+  Query,
   Request,
 } from '@nestjs/common'
 import { ApiBearerAuth, ApiCreatedResponse } from '@nestjs/swagger'
-import { ZodSerializerDto } from 'nestjs-zod'
+import { ZodSerializerDto, ZodValidationPipe } from 'nestjs-zod'
 import { JwtPayload } from '../types'
 import { CreateTaskBodyDto } from './dtos/request/create-task.dto'
 import { DeleteTaskParamsDto } from './dtos/request/delete-task.dto'
+import { QueryTaskDto, queryTaskDtoSchema } from './dtos/request/query-task.dto'
 import {
   UpdateTaskBodyDto,
   UpdateTaskParamsDto,
@@ -34,8 +36,11 @@ export class TaskController {
   @HttpCode(HttpStatus.OK)
   @ZodSerializerDto(TasksResponseDto)
   @ApiCreatedResponse({ type: TasksResponseDto })
-  getAll(@Request() req: { user: JwtPayload }) {
-    return this.taskService.find(req.user.sub)
+  getAll(
+    @Request() req: { user: JwtPayload },
+    @Query(new ZodValidationPipe(queryTaskDtoSchema)) query: QueryTaskDto,
+  ) {
+    return this.taskService.find(req.user.sub, query)
   }
 
   @ApiBearerAuth()

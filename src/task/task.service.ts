@@ -3,6 +3,7 @@ import { InjectModel } from '@nestjs/mongoose'
 import { Model, Types } from 'mongoose'
 import { TaskStatus } from '../types'
 import { CreateTaskBodyDto } from './dtos/request/create-task.dto'
+import { QueryTaskDto } from './dtos/request/query-task.dto'
 import { UpdateTaskBodyDto } from './dtos/request/update-task.dto'
 import { Task } from './task.schema'
 
@@ -12,8 +13,13 @@ export class TaskService {
     @InjectModel(Task.name) private readonly taskModel: Model<Task>,
   ) {}
 
-  async find(ownerId: Types.ObjectId): Promise<Task[]> {
-    const foundTasks = await this.taskModel.find({ owner: ownerId })
+  async find(ownerId: Types.ObjectId, query: QueryTaskDto): Promise<Task[]> {
+    const { page = 1, limit = 10, status } = query
+
+    const foundTasks = await this.taskModel
+      .find({ owner: ownerId, ...(status && { status }) })
+      .skip((page - 1) * limit)
+      .limit(limit)
 
     return foundTasks
   }
